@@ -156,7 +156,7 @@ class BoxDiagStep {
     root : BDSNode = new BDSNode(0)
     curr : BDSNode = this.root
     dir : number = 1
-    
+
     draw(context : CanvasRenderingContext2D) {
         this.root.draw(context)
     }
@@ -172,5 +172,26 @@ class BoxDiagStep {
 
     startUpdating(cb : Function) {
         this.curr.startUpdating(cb)
+    }
+}
+
+class Renderer {
+    bds : BoxDiagStep = new BoxDiagStep()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.bds.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.bds.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.bds.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
     }
 }
