@@ -31,3 +31,12 @@ class BoxDiagStepStage {
         stage.handleTap()
     }
 }
+
+const divideScale : Function = (scale : number , i : number, n : number) : number => Math.min(1/n, Math.max(0, scale - i * (1 / n))) * n
+
+const getScaleFactor : Function = (scale : number) : number => Math.floor(scale / 0.5)
+
+const updateScale : Function = (scale : number, dir : number) : number => {
+    const k : number = getScaleFactor(scale)
+    return 0.05 * dir * ((1 - k) / lines + k)
+}
