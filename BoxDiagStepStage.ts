@@ -82,3 +82,29 @@ class Animator {
         }
     }
 }
+
+const drawBDSNode : Function = (context : CanvasRenderingContext2D, i, scale) => {
+     const gap : number = w / (nodes + 1)
+     const sc1 : number = divideScale(scale, 0, 2)
+     const sc2 : number = divideScale(scale, 1, 2)
+     const size : number = gap / 3
+     context.strokeStyle = '#01579B'
+     context.lineCap = 'round'
+     context.lineWidth = Math.min(w, h) / 60
+     const degGap : number = (2 * Math.PI) / lines
+     context.save()
+     context.translate(gap * (i + 1), h/2)
+     context.rotate(sc2 * Math.PI)
+     context.strokeRect(-size, -size, 2 * size, 2 * size)
+     for (var j = 0; j < lines; j++) {
+        const sc : number = divideScale(sc1, i, lines)
+        context.save()
+        context.rotate(degGap * j)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(size * sc, size * sc)
+        context.stroke()
+        context.restore()
+     }
+     context.restore()
+}
