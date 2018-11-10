@@ -108,3 +108,45 @@ const drawBDSNode : Function = (context : CanvasRenderingContext2D, i, scale) =>
      }
      context.restore()
 }
+
+class BDSNode {
+    state : State = new State()
+    prev : BDSNode
+    next : BDSNode
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < nodes - 1) {
+            this.next = new BDSNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        drawBDSNode(context, this.i, this.state.scale)
+        this.next.draw(context)
+    }
+
+    update(cb : Function) {
+        this.state.update(cb)
+    }
+
+    startUpdating(cb : Function) {
+        this.state.startUpdating(cb)
+    }
+
+    getNext(dir : number, cb : Function) {
+        var curr : BDSNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
