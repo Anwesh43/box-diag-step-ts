@@ -29,8 +29,8 @@ class BoxDiagStepStage {
 
     static init() {
         const stage : BoxDiagStepStage = new BoxDiagStepStage()
-        stage.render()
         stage.initCanvas()
+        stage.render()
         stage.handleTap()
     }
 }
@@ -50,6 +50,7 @@ class State {
     prevScale : number = 0
 
     update(cb : Function) {
+        console.log(updateScale(this.scale, this.dir))
         this.scale += updateScale(this.scale, this.dir)
         if (Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
@@ -97,16 +98,18 @@ const drawBDSNode : Function = (context : CanvasRenderingContext2D, i, scale) =>
      const degGap : number = (2 * Math.PI) / lines
      context.save()
      context.translate(gap * (i + 1), h/2)
-     context.rotate(sc2 * Math.PI)
+     context.rotate(sc2 * Math.PI/2)
      context.strokeRect(-size, -size, 2 * size, 2 * size)
      for (var j = 0; j < lines; j++) {
-        const sc : number = divideScale(sc1, i, lines)
+        const sc : number = divideScale(sc1, j, lines)
         context.save()
         context.rotate(degGap * j)
-        context.beginPath()
-        context.moveTo(0, 0)
-        context.lineTo(size * sc, size * sc)
-        context.stroke()
+        if (sc > 0) {
+            context.beginPath()
+            context.moveTo(0, 0)
+            context.lineTo(size * sc, size * sc)
+            context.stroke()
+        }
         context.restore()
      }
      context.restore()
@@ -130,7 +133,9 @@ class BDSNode {
 
     draw(context : CanvasRenderingContext2D) {
         drawBDSNode(context, this.i, this.state.scale)
-        this.next.draw(context)
+        if (this.next) {
+            this.next.draw(context)
+        }
     }
 
     update(cb : Function) {
